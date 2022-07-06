@@ -11,6 +11,8 @@ import "./Home.css"
 
 export default function Home({
   user,
+  setUser,
+  setError,
   isFetching,
   products,
   activeCategory,
@@ -34,7 +36,7 @@ export default function Home({
 
   return (
     <div className="Home">
-      <Navbar />
+      <Navbar user={user}setUser={setUser} setError={setError}/>
       <SubNavbar
         user={user}
         activeCategory={activeCategory}

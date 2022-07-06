@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
-import axios from "axios"
 import "./Signup.css"
+import ApiClient from "../../services/apiClient"
 
 export default function Signup({ user, setUser }) {
   const navigate = useNavigate()
@@ -54,24 +54,25 @@ export default function Signup({ user, setUser }) {
       setErrors((e) => ({ ...e, passwordConfirm: null }))
     }
 
-    try {
-      const res = await axios.post("http://localhost:3001/auth/register", {
-        name: form.name,
-        email: form.email,
-        password: form.password,
-      })
-      if (res?.data?.user) {
-        setUser(res.data.user)
-      } else {
-        setErrors((e) => ({ ...e, form: "Something went wrong with registration" }))
-      }
-    } catch (err) {
-      console.log(err)
-      const message = err?.response?.data?.error?.message
-      setErrors((e) => ({ ...e, form: message ?? String(err) }))
-    } finally {
-      setIsProcessing(false)
+    const {data, error} = await ApiClient.signupUser({
+      name: form.name,
+      email: form.email,
+      password: form.password,
+    })
+
+    if (data?.user) {
+      setUser(data.user)
+      ApiClient.setToken(data.token)
+    } else {
+      setErrors((e) => ({ ...e, form: "Something went wrong with registration" }))
     }
+
+    if (error) {
+      console.log(error)
+      const message = error?.response?.data?.error?.message
+      setErrors(message ?? String(error))
+    } 
+    setIsProcessing(false)
   }
 
   return (

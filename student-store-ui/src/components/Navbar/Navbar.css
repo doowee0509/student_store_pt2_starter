@@ -9,9 +9,10 @@
   align-items: center;
   padding: 0 var(--side-padding);
 }
-.Navbar a {
+.Navbar a, li {
   color: white;
   font-weight: 500;
+  cursor: pointer;
 }
 
 .Navbar .content {

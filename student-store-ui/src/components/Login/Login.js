@@ -2,6 +2,8 @@ import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import axios from "axios"
 import "./Login.css"
+import apiClient from "../../services/apiClient"
+
 
 export default function Login({ user, setUser }) {
   const navigate = useNavigate()
@@ -36,19 +38,21 @@ export default function Login({ user, setUser }) {
     setIsProcessing(true)
     setErrors((e) => ({ ...e, form: null }))
 
-    try {
-      const res = await axios.post("http://localhost:3001/auth/login", form)
-      if (res?.data?.user) {
-        setUser(res.data.user)
-      } else {
-        setErrors((e) => ({ ...e, form: "Invalid username/password combination" }))
-      }
-    } catch (err) {
-      console.log(err)
+    const {data, error} = await apiClient.loginUser(form)
+
+    if (data?.user) {
+      setUser(data.user)
+      apiClient.setToken(data.token)
+    } else {
       setErrors((e) => ({ ...e, form: "Invalid username/password combination" }))
-    } finally {
-      setIsProcessing(false)
     }
+
+    if (error) {
+      console.log(error)
+      const message = error?.response?.data?.error?.message
+      setErrors(message ?? String(error))
+    } 
+    setIsProcessing(false)
   }
 
   return (

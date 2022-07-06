@@ -22,6 +22,8 @@ const groupOrderDetailsByOrderId = (orderDetails) => {
 
 export default function Orders({
   user,
+  setUser,
+  setError,
   orders,
   activeCategory,
   setActiveCategory,
@@ -34,7 +36,7 @@ export default function Orders({
 
   return (
     <div className="Orders">
-      <Navbar />
+      <Navbar user={user}setUser={setUser} setError={setError}/>
       <SubNavbar
         user={user}
         activeCategory={activeCategory}

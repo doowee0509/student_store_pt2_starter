@@ -3,9 +3,23 @@ import logo from "../../assets/codepath.svg"
 import Twitter from "../Icons/Twitter"
 import Instagram from "../Icons/Instagram"
 import Facebook from "../Icons/Facebook"
+import { useNavigate } from "react-router-dom"
+import apiClient from "../../services/apiClient"
+
+
 import "./Navbar.css"
 
-export default function Navbar() {
+export default function Navbar({user, setUser, setError}) {
+  
+  const navigate = useNavigate()
+
+  const handleLogout = async () => {
+    await apiClient.logoutUser()
+    setUser({})
+    setError(null)
+    navigate("/")
+  }
+
   return (
     <nav className="Navbar">
       <div className="content">
@@ -34,6 +48,20 @@ export default function Navbar() {
           <li>
             <Link to="/#Buy">Buy Now</Link>
           </li>
+          {user?.email? null : <li>
+            <Link to="/login">
+              Login
+            </Link>
+          </li>}
+          {user?.email?<li onClick={handleLogout} className="logout">
+              Logout
+          </li> : null}
+
+          {user?.email ? null :<li>
+            <Link to="/signup">
+                Register
+            </Link>
+          </li>}
         </ul>
       </div>
     </nav>
